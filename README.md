@@ -29,7 +29,7 @@ Allows you to randomly choose from a set that you define
 
   Pick Random Tea will display the name and amount available of the randomly chosen tea in the input/output box
 
-    Additionally both lists will be scrolled to include the randomly chosen tea
+   Additionally both lists will be scrolled to include the randomly chosen tea
 
 Automatically saves and loads data
 
