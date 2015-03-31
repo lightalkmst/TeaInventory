@@ -2,6 +2,8 @@
 
 A simple tea inventory manager written entirely in F#
 
+I actually don't know how to distribute my software, but copy the executable and font.png into the same folder
+
 Features:
 Allows you to define types of tea (ex: black, white, green, oolong)
 Allows you to define invdividual teas (ex: earl grey)
