@@ -58,9 +58,15 @@ type Game1 () as x = class
     (* putting the side effects inside the input state management is not something I would do in a multiple state application *)
     (* however I am doing it here because there is only one general state for this application *)
     let keyboard_update () =
+        (* modify the input string directly since there's only one state *)
+        (* i wouldn't do this in a proper application *)
+        (* instead i would simply process the keyboard state into an intermediate keystate collection that is easier to consume 
+            and pass it off to where it's needed
+            *)
         let keys2 = Keyboard.GetState().GetPressedKeys() in
         let keys3 = Array.filter (fun h -> Array.forall (( <> ) h) keys) keys2 in
         keys3 |> Array.iter (fun h -> 
+            (* prevent output being consumed as input *)
             if randomed then (
                 randomed <- false;
                 input_string <- ""
@@ -97,9 +103,12 @@ type Game1 () as x = class
             | _ -> ()
         );
         input_string <- input_string.ToUpper();
+        (* prevent name from being too long and colliding with other buttons and the side of the screen *)
+        input_string <- input_string.Substring(0, Math.Min(input_string.Length, 38));
         keys <- keys2
 
     let mouse_update () =
+        (* see keyboard_update for my notes on consuming input directly in the input function *)
         let mouse2 = Mouse.GetState() in
         let x = mouse2.X in
         let y = mouse2.Y in
@@ -283,11 +292,16 @@ type Game1 () as x = class
     override x.Initialize() =
         base.Initialize();
         x.Window.Title <- "Inventory";
+        spriteBatch <- new SpriteBatch(graphics.GraphicsDevice);
+        (* blank white solid texture that i overlay with other colors so i don't need to construct new textures for each color *)
+        (* meaning i create exactly 1 texture 1 time to handle all of the colored panels in the program *)
         solid_texture <- new Texture2D(graphics.GraphicsDevice, 1, 1);
         solid_texture.SetData([| Color.White |]);
-        spriteBatch <- new SpriteBatch(graphics.GraphicsDevice);
+        (* vertical sync *)
         graphics.SynchronizeWithVerticalRetrace <- true;
+        (* frame rate *)
         x.TargetElapsedTime <- TimeSpan.FromSeconds(1.0 / 30.0);
+        (* resolution *)
         graphics.PreferredBackBufferWidth <- 1400;
         graphics.PreferredBackBufferHeight <- 900;
         ()
@@ -325,9 +339,9 @@ type Game1 () as x = class
                         let pair = h.Split(num_delimiter) in
                         pair.[0], Int32.Parse(pair.[1]), false
                     ) teas2 in
-                    teas <- Array.append teas [| (kind, arr) |];
+                    teas <- Array.append teas [| (kind, arr) |]
                 else
-                    teas <- Array.append teas [| (line, [||]) |];
+                    teas <- Array.append teas [| (line, [||]) |]
             done
 
     override x.Update (gameTime) =
@@ -417,15 +431,16 @@ type Game1 () as x = class
         (* right - *)
         spriteBatch.Draw(solid_texture, new Rectangle(1318, 222, 14, 6), Color.Black);
 
-
         (* draw mouse last *)
         (* change to mouse texture *)
         let mouse_state = Mouse.GetState() in
-        spriteBatch.Draw(solid_texture, new Rectangle(mouse_state.X, mouse_state.Y, 20, 20), Color.White);
+        (* too lazy to make mouse sprite *)
+        spriteBatch.Draw(solid_texture, new Rectangle(mouse_state.X, mouse_state.Y, 5, 20), Color.Red);
+        spriteBatch.Draw(solid_texture, new Rectangle(mouse_state.X, mouse_state.Y, 20, 6), Color.Red);
         spriteBatch.End()
 
     override x.OnExiting(sender: obj, args: EventArgs) : unit =
-        //base.OnExiting(sender, args);
+        (* save data on exit *)
         let stream = new StreamWriter("teas.txt") in
             teas |> Array.iter (fun (kind, arr) ->
                 stream.Write(kind);
