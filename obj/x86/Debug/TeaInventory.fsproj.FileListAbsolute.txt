@@ -6,3 +6,4 @@ C:\Omar Khan\F#\TeaInventory\bin\Debug\OpenTK.dll
 C:\Omar Khan\F#\TeaInventory\bin\Debug\Tao.Sdl.dll
 C:\Omar Khan\F#\TeaInventory\obj\x86\Debug\TeaInventory.exe
 C:\Omar Khan\F#\TeaInventory\obj\x86\Debug\TeaInventory.pdb
+C:\Omar Khan\F#\TeaInventory\obj\x86\Debug\TeaInventory.fsprojResolveAssemblyReference.cache

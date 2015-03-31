@@ -48,13 +48,6 @@ type Game1 () as x = class
     let outer_size = 4
     let outer_color = Color.Black
 
-    (*  +/- buttons for random pick
-        +/- buttons for individual teas
-        save to file
-        buttons to select types
-        buttons to select individual teas
-        *)
-
     (* putting the side effects inside the input state management is not something I would do in a multiple state application *)
     (* however I am doing it here because there is only one general state for this application *)
     let keyboard_update () =
@@ -442,16 +435,16 @@ type Game1 () as x = class
     override x.OnExiting(sender: obj, args: EventArgs) : unit =
         (* save data on exit *)
         let stream = new StreamWriter("teas.txt") in
-            teas |> Array.iter (fun (kind, arr) ->
-                stream.Write(kind);
-                arr |> Array.iter (fun (name, count, _) ->
-                    stream.Write(type_delimiter);
-                    stream.Write(name);
-                    stream.Write(num_delimiter);
-                    stream.Write(count.ToString())
-                );
-                stream.Write('\n');
+        teas |> Array.iter (fun (kind, arr) ->
+            stream.Write(kind);
+            arr |> Array.iter (fun (name, count, _) ->
+                stream.Write(type_delimiter);
+                stream.Write(name);
+                stream.Write(num_delimiter);
+                stream.Write(count.ToString())
             );
-            stream.Flush();
-            stream.Close()
+            stream.Write('\n');
+        );
+        stream.Flush();
+        stream.Close()
 end
