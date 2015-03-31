@@ -2,6 +2,9 @@
 
 A simple tea inventory manager written entirely in F#
 
+Since it is in F#, which is not one of the standard .NET languages, it will require an additional installation:
+http://www.microsoft.com/en-us/download/details.aspx?id=15834
+
 I actually don't know how to distribute my software, but copy the executable and font.png into the same folder
 
 Features:
