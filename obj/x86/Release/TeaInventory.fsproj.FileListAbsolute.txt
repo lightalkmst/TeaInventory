@@ -4,3 +4,4 @@ C:\Omar Khan\F#\TeaInventory\bin\Release\MonoGame.Framework.dll
 C:\Omar Khan\F#\TeaInventory\bin\Release\OpenTK.dll
 C:\Omar Khan\F#\TeaInventory\bin\Release\Tao.Sdl.dll
 C:\Omar Khan\F#\TeaInventory\obj\x86\Release\TeaInventory.exe
+C:\Omar Khan\F#\TeaInventory\obj\x86\Release\TeaInventory.fsprojResolveAssemblyReference.cache
