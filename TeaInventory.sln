@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "TeaInventory", "TeaInventory.fsproj", "{D51D7C50-D020-4C96-8BEA-BF347516B016}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{ED5DDCA2-A828-40C7-881C-B5559019B73D}"
+	ProjectSection(SolutionItems) = preProject
+		bin\Debug\Font.png = bin\Debug\Font.png
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D51D7C50-D020-4C96-8BEA-BF347516B016}.Debug|x86.ActiveCfg = Debug|x86
+		{D51D7C50-D020-4C96-8BEA-BF347516B016}.Debug|x86.Build.0 = Debug|x86
+		{D51D7C50-D020-4C96-8BEA-BF347516B016}.Release|x86.ActiveCfg = Release|x86
+		{D51D7C50-D020-4C96-8BEA-BF347516B016}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+	EndGlobalSection
+EndGlobal
