@@ -1,0 +1,23 @@
+System.Collections.Generic.KeyNotFoundException: Exception of type 'System.Collections.Generic.KeyNotFoundException' was thrown.
+   at Microsoft.FSharp.Collections.ArrayModule.go@541-1[T](FSharpFunc`2 f, T[] array, Int32 len, Int32 n)
+   at Microsoft.FSharp.Collections.ArrayModule.FindIndex[T](FSharpFunc`2 predicate, T[] array)
+   at <StartupCode$TeaInventory>.$Game.buttons@216-26.Invoke(Unit unitVar0) in C:\Omar Khan\F#\TeaInventory\Game.fs:line 218
+   at <StartupCode$TeaInventory>.$Game.clo@280-8.Invoke(Tuple`2 tupledArg) in C:\Omar Khan\F#\TeaInventory\Game.fs:line 280
+   at Microsoft.FSharp.Primitives.Basics.List.iter[T](FSharpFunc`2 f, FSharpList`1 x)
+   at Microsoft.FSharp.Collections.ListModule.Iterate[T](FSharpFunc`2 action, FSharpList`1 list)
+   at TeaInventory.Game1.mouse_update() in C:\Omar Khan\F#\TeaInventory\Game.fs:line 280
+   at TeaInventory.Game1.Update(GameTime gameTime) in C:\Omar Khan\F#\TeaInventory\Game.fs:line 342
+   at Microsoft.Xna.Framework.Game.DoUpdate(GameTime gameTime)
+   at Microsoft.Xna.Framework.Game.Tick()
+   at Microsoft.Xna.Framework.OpenTKGameWindow.OnUpdateFrame(Object sender, FrameEventArgs e)
+   at System.EventHandler`1.Invoke(Object sender, TEventArgs e)
+   at OpenTK.GameWindow.OnUpdateFrame(FrameEventArgs e)
+   at OpenTK.GameWindow.OnUpdateFrameInternal(FrameEventArgs e)
+   at OpenTK.GameWindow.RaiseUpdateFrame(Stopwatch update_watch, Double& next_update, FrameEventArgs update_args)
+   at OpenTK.GameWindow.DispatchUpdateAndRenderFrame(Object sender, EventArgs e)
+   at OpenTK.GameWindow.Run(Double updates_per_second, Double frames_per_second)
+   at OpenTK.GameWindow.Run(Double updateRate)
+   at Microsoft.Xna.Framework.OpenTKGamePlatform.RunLoop()
+   at Microsoft.Xna.Framework.Game.Run(GameRunBehavior runBehavior)
+   at Microsoft.Xna.Framework.Game.Run()
+   at Program.main(String[] argv) in C:\Omar Khan\F#\TeaInventory\Program.fs:line 13

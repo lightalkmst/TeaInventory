@@ -24,11 +24,10 @@ type Game1 () as x = class
 
     let mutable kind_scroll = 0
     let mutable single_scroll = 0
-    let max_display = 10
+    let max_display = 9
 
     let mutable active_kind = ""
     let mutable active_single = ""
-    let mutable randomed = false
 
     let type_delimiter = '|'
     let num_delimiter = ':'
@@ -40,7 +39,7 @@ type Game1 () as x = class
 
     (* button drawing data *)
     let font_size = 14
-    let active_font_color = Color.Green
+    let active_font_color = Color.DarkGreen
     let default_font_color = Color.Black
     let inner_size = 14
     let active_inner_color = Color.LightBlue
@@ -60,10 +59,6 @@ type Game1 () as x = class
         let keys3 = Array.filter (fun h -> Array.forall (( <> ) h) keys) keys2 in
         keys3 |> Array.iter (fun h -> 
             (* prevent output being consumed as input *)
-            if randomed then (
-                randomed <- false;
-                input_string <- ""
-            );
             match h with
             | Keys.A -> input_string <- input_string + "A"
             | Keys.B -> input_string <- input_string + "B"
@@ -108,7 +103,23 @@ type Game1 () as x = class
         if mouse2.LeftButton = ButtonState.Pressed && not mouse.[0] then (
             let buttons: (Rectangle * (unit -> unit)) list = [
                 (* default buttons *)
-                (new Rectangle(50, 50, 246, 50), fun () -> 
+                (new Rectangle(50, 50, 148, 50), fun () -> 
+                    (* add type *)
+                    if input_string <> "" && (teas |> Array.forall (fun (kind, _) -> input_string <> kind)) then (
+                        let _ = teas <- Array.append teas [| (input_string, [||]) |] in
+                        let _ = teas <- Array.sortWith (fun (k1, _) (k2, _) -> k1.CompareTo(k2)) teas in
+                        active_kind <- input_string
+                    );
+                    input_string <- ""
+                );
+                (new Rectangle(50, 100, 428, 50), fun () -> 
+                    (* delete type *)
+                    if active_kind <> "" then
+                        teas <- teas |> Array.filter (fun (kind, _) -> kind <> active_kind);
+                        active_kind <- "";
+                        active_single <- ""
+                );
+                (new Rectangle(50, 750, 246, 50), fun () -> 
                     (* select all teas *)
                     teas <- teas |> Array.map (fun (kind, h2) -> 
                         kind, (h2 |> Array.map (fun (name, number, _) ->
@@ -117,7 +128,7 @@ type Game1 () as x = class
                         )
                     )
                 );
-                (new Rectangle(50, 100, 274, 50), fun () -> 
+                (new Rectangle(50, 800, 274, 50), fun () -> 
                     (* deselect all teas *)
                     teas <- teas |> Array.map (fun (kind, h2) -> 
                         kind, (h2 |> Array.map (fun (name, number, _) ->
@@ -126,47 +137,9 @@ type Game1 () as x = class
                         )
                     )
                 );
-                (new Rectangle(50, 150, 148, 50), fun () -> 
-                    (* add type *)
-                    if randomed then (
-                        randomed <- false;
-                        input_string <- ""
-                    )
-                    elif input_string <> "" && (teas |> Array.forall (fun (kind, _) -> input_string <> kind)) then (
-                        let _ = teas <- Array.append teas [| (input_string, [||]) |] in
-                        let _ = teas <- Array.sortWith (fun (k1, _) (k2, _) -> k1.CompareTo(k2)) teas in
-                        active_kind <- input_string
-                    );
-                    input_string <- ""
-                );
-                (new Rectangle(50, 200, 428, 50), fun () -> 
-                    (* delete type *)
-                    if active_kind <> "" then
-                        teas <- teas |> Array.filter (fun (kind, _) -> kind <> active_kind);
-                        active_kind <- "";
-                        active_single <- ""
-                );
-                (new Rectangle(725, 50, 246, 50), fun () -> 
-                    (* select all teas of type *)
-                    if active_kind <> "" then
-                        let i = Array.findIndex (fun (kind, _) -> kind = active_kind) teas in
-                        let kind, arr = teas.[i] in
-                        teas.[i] <- kind, arr |> Array.map (fun (name, count, _) -> name, count, true)
-                );
-                (new Rectangle(725, 100, 274, 50), fun () -> 
-                    (* deselect all teas of type *)
-                    if active_kind <> "" then
-                        let i = Array.findIndex (fun (kind, _) -> kind = active_kind) teas in
-                        let kind, arr = teas.[i] in
-                        teas.[i] <- kind, arr |> Array.map (fun (name, count, _) -> name, count, false)
-                );
-                (new Rectangle(725, 150, 134, 50), fun () -> 
+                (new Rectangle(725, 50, 134, 50), fun () -> 
                     (* add tea *)
-                    if randomed then (
-                        randomed <- false;
-                        input_string <- ""
-                    )
-                    elif teas.GetLength(0) > 0 then
+                    if teas.GetLength(0) > 0 then
                         let i = Array.findIndex (fun (kind, _) -> kind = active_kind) teas in
                         let kind, arr = teas.[i] in
                         if input_string <> "" && (arr |> Array.forall (fun (name, _, _) -> input_string <> name)) then (
@@ -175,7 +148,7 @@ type Game1 () as x = class
                         );
                         input_string <- ""
                 );
-                (new Rectangle(725, 200, 456, 50), fun () -> 
+                (new Rectangle(725, 100, 456, 50), fun () -> 
                     (* delete tea *)
                     if active_single <> "" then
                         let i = Array.findIndex (fun (kind, _) -> kind = active_kind) teas in
@@ -183,7 +156,21 @@ type Game1 () as x = class
                         teas.[i] <- kind, arr |> Array.filter (fun (name, _, _) -> name <> active_single);
                         active_single <- ""
                 );
-                (new Rectangle(725, 250, 246, 50), fun () -> 
+                (new Rectangle(725, 750, 246, 50), fun () -> 
+                    (* select all teas of type *)
+                    if active_kind <> "" then
+                        let i = Array.findIndex (fun (kind, _) -> kind = active_kind) teas in
+                        let kind, arr = teas.[i] in
+                        teas.[i] <- kind, arr |> Array.map (fun (name, count, _) -> name, count, true)
+                );
+                (new Rectangle(725, 800, 274, 50), fun () -> 
+                    (* deselect all teas of type *)
+                    if active_kind <> "" then
+                        let i = Array.findIndex (fun (kind, _) -> kind = active_kind) teas in
+                        let kind, arr = teas.[i] in
+                        teas.[i] <- kind, arr |> Array.map (fun (name, count, _) -> name, count, false)
+                );
+                (new Rectangle(725, 700, 246, 50), fun () -> 
                     (* pick random tea *)
                     if teas.GetLength(0) > 0 then
                         let arr = 
@@ -194,7 +181,6 @@ type Game1 () as x = class
                         in
                         if arr.GetLength(0) > 0 then
                             let kind, (name, count, _) = arr.[DateTime.Now.Millisecond % arr.GetLength(0)] in
-                            input_string <- name + "  " + count.ToString();
                             active_kind <- kind;
                             active_single <- name;
                             (* pan to appropriate kind and single *)
@@ -208,24 +194,25 @@ type Game1 () as x = class
                             let single_index = Array.findIndex (fun (name2, _, _) -> name2 = name) arr in
                             begin if single_index < single_scroll then
                                 single_scroll <- single_index
-                            elif single_index > single_scroll + max_display then
+                            elif single_index >= single_scroll + max_display then
                                 single_scroll <- single_index - max_display + 1
-                            end;
-                            randomed <- true
+                            end
                 );
                 (new Rectangle(1300, 150, 50, 50), fun () ->
-                    (* right + *)
-                    let i = Array.findIndex (fun (kind, _) -> kind = active_kind) teas in
-                    let kind, arr = teas.[i] in
-                    teas.[i] <- kind, arr |> Array.map (fun (name, count, check) -> name, (if name = active_single then count + 1 else count), check);
-                    input_string <- ""
+                    (* + *)
+                    if active_kind <> "" then
+                        let i = Array.findIndex (fun (kind, _) -> kind = active_kind) teas in
+                        let kind, arr = teas.[i] in
+                        teas.[i] <- kind, arr |> Array.map (fun (name, count, check) -> name, (if name = active_single then count + 1 else count), check);
+                        input_string <- ""
                 );
-                (new Rectangle(1300, 200, 50, 50), fun () ->
-                    (* right - *)
-                    let i = Array.findIndex (fun (kind, _) -> kind = active_kind) teas in
-                    let kind, arr = teas.[i] in
-                    teas.[i] <- kind, arr |> Array.map (fun (name, count, check) -> name, (if name = active_single then Math.Max(count - 1, 0) else count), check);
-                    input_string <- ""
+                (new Rectangle(1250, 150, 50, 50), fun () ->
+                    (* - *)
+                    if active_kind <> "" then
+                        let i = Array.findIndex (fun (kind, _) -> kind = active_kind) teas in
+                        let kind, arr = teas.[i] in
+                        teas.[i] <- kind, arr |> Array.map (fun (name, count, check) -> name, (if name = active_single then Math.Max(count - 1, 0) else count), check);
+                        input_string <- ""
                 );
                 (new Rectangle(611, 50, 64, 50), fun () ->
                     (* left up *)
@@ -251,7 +238,7 @@ type Game1 () as x = class
                 teas |> ((0, buttons) |> Array.fold (fun (i, a) (kind, arr) ->
                     if i >= kind_scroll && i < kind_scroll + max_display then
                         let text_width = kind.Length * 14 + 36 in
-                        i + 1, (new Rectangle(50, (i - kind_scroll) * 50 + 350, text_width, 50), fun () -> 
+                        i + 1, (new Rectangle(50, (i - kind_scroll) * 50 + 225, text_width, 50), fun () -> 
                             active_kind <- kind;
                             input_string <- ""
                         ) :: a
@@ -266,7 +253,7 @@ type Game1 () as x = class
                     arr |> ((0, buttons) |> Array.fold (fun (i, a) (name, count, check) ->
                         if i >= single_scroll && i < single_scroll + max_display then
                             let text_width = name.Length * 14 + 35 + (int (Math.Log10(float count))) * 14 + 14 in
-                            i + 1, (new Rectangle(725, (i - single_scroll) * 50 + 350, text_width, 50), fun () ->
+                            i + 1, (new Rectangle(725, (i - single_scroll) * 50 + 225, text_width, 50), fun () ->
                                 arr.[i] <- name, count, not check;
                                 active_single <- name;
                                 input_string <- ""
@@ -343,7 +330,7 @@ type Game1 () as x = class
         ()
     
     override x.Draw (gameTime) =
-        x.GraphicsDevice.Clear Color.LightBlue;
+        x.GraphicsDevice.Clear Color.Gray;
         let draw_text (s: string) x y size color =
             let draw_char i h =
                 if h <> ' ' then
@@ -359,16 +346,12 @@ type Game1 () as x = class
             (* text, x, y, font_color, inner_color *)
             let buttons = [
                 (* default buttons *)
-                ("Select All Teas", 50, 50, Color.Black, Color.White);
-                ("Deselect All Teas", 50, 100, Color.Black, Color.White);
-                ("Select All Teas Of This Kind", 725, 50, Color.Black, Color.White);
-                ("Deselect All Teas Of This Kind", 725, 100, Color.Black, Color.White);
-                ("Add Type", 50, 150, Color.Black, Color.White);
-                ("Delete Type", 50, 200, Color.Black, Color.White);
-                ("Add Tea", 725, 150, Color.Black, Color.White);
-                ("Delete Tea", 725, 200, Color.Black, Color.White);
-                ((if input_string = "" then "Input And Output" else input_string), 50, 250, Color.Black, Color.White);
-                ("Pick Random Tea", 725, 250, Color.Black, Color.White);
+                ("Add Type", 50, 50, Color.Black, Color.White);
+                ("Delete Type", 50, 100, Color.Black, Color.White);
+                ("Add Tea", 725, 50, Color.Black, Color.White);
+                ("Delete Tea", 725, 100, Color.Black, Color.White);
+                ((if input_string = "" then "Type New Tea Types And Names Here" else input_string), 50, 150, Color.Black, Color.White);
+                ("Pick Random Tea", 725, 700, Color.Black, Color.White);
                 ("Up", 611, 50, Color.Black, Color.White);
                 ("Down", 583, 100, Color.Black, Color.White);
                 ("Up", 1286, 50, Color.Black, Color.White);
@@ -376,7 +359,11 @@ type Game1 () as x = class
                 (* + button *)
                 (" ", 1300, 150, Color.Black, Color.White);
                 (* - button *)
-                (" ", 1300, 200, Color.Black, Color.White);
+                (" ", 1250, 150, Color.Black, Color.White);
+                ("Select All Teas", 50, 750, Color.Black, Color.White);
+                ("Deselect All Teas", 50, 800, Color.Black, Color.White);
+                ("Select All Teas Of This Kind", 725, 750, Color.Black, Color.White);
+                ("Deselect All Teas Of This Kind", 725, 800, Color.Black, Color.White);
             ] in
             let _, buttons =
                 (* tea types *)
@@ -385,7 +372,7 @@ type Game1 () as x = class
                         let check = teas2 |> Array.exists (fun (_, _, x) -> x) in
                         let color1 = if check then active_font_color else default_font_color in
                         let color2 = if kind = active_kind then active_inner_color else default_inner_color in
-                        i + 1, (kind, 50, (i - kind_scroll) * 50 + 350, color1, color2) :: a
+                        i + 1, (kind, 50, (i - kind_scroll) * 50 + 225, color1, color2) :: a
                     else
                         i + 1, a
                 ))
@@ -398,7 +385,7 @@ type Game1 () as x = class
                         if i >= single_scroll && i < single_scroll + max_display then
                             let color1 = if check then active_font_color else default_font_color in
                             let color2 = if name = active_single then active_inner_color else default_inner_color in
-                            i + 1, (name + "  " + count.ToString(), 725, (i - single_scroll) * 50 + 350, color1, color2) :: a
+                            i + 1, (name + "  " + count.ToString(), 725, (i - single_scroll) * 50 + 225, color1, color2) :: a
                         else
                             i + 1, a
                     ))
@@ -418,18 +405,18 @@ type Game1 () as x = class
         (* finish drawing in the + and - buttons. i don't feel like making sprites for them *)
         (* 1300, 50 *)
         (* 1318, 68 *)
-        (* right + *)
+        (* + *)
         spriteBatch.Draw(solid_texture, new Rectangle(1322, 168, 6, 14), Color.Black);
         spriteBatch.Draw(solid_texture, new Rectangle(1318, 172, 14, 6), Color.Black);
-        (* right - *)
-        spriteBatch.Draw(solid_texture, new Rectangle(1318, 222, 14, 6), Color.Black);
+        (* - *)
+        spriteBatch.Draw(solid_texture, new Rectangle(1268, 172, 14, 6), Color.Black);
 
         (* draw mouse last *)
         (* change to mouse texture *)
         let mouse_state = Mouse.GetState() in
         (* too lazy to make mouse sprite *)
         spriteBatch.Draw(solid_texture, new Rectangle(mouse_state.X, mouse_state.Y, 5, 20), Color.Red);
-        spriteBatch.Draw(solid_texture, new Rectangle(mouse_state.X, mouse_state.Y, 20, 6), Color.Red);
+        spriteBatch.Draw(solid_texture, new Rectangle(mouse_state.X, mouse_state.Y, 20, 5), Color.Red);
         spriteBatch.End()
 
     override x.OnExiting(sender: obj, args: EventArgs) : unit =
